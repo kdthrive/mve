@@ -110,9 +110,6 @@ Scene::Scene (void)
 inline Scene::Ptr
 Scene::create (std::string const& path)
 {   
-    std::cout<<"11111111111111111"<<std::endl;
-    std::cout<<path<<std::endl;
-    std::cout<<"22222222222222222"<<std::endl;
     Scene::Ptr scene(new Scene);
     scene->load_scene(path);
     return scene;
