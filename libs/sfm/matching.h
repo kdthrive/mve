@@ -12,7 +12,7 @@
 
 #include <vector>
 #include <limits>
-
+#include <iostream>
 #include "math/defines.h"
 #include "sfm/defines.h"
 #include "sfm/nearest_neighbor.h"
@@ -125,9 +125,11 @@ Matching::oneway_match (Options const& options,
 
     float const square_lowe_thres = MATH_POW2(options.lowe_ratio_threshold);
     float const square_dist_thres = MATH_POW2(options.distance_threshold);
+    // 最近邻匹配
     NearestNeighbor<T> nn;
     nn.set_elements(set_2);
     nn.set_num_elements(set_2_size);
+
     nn.set_element_dimensions(options.descriptor_length);
 
     for (int i = 0; i < set_1_size; ++i)

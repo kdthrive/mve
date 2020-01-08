@@ -30,7 +30,9 @@ MVE_NAMESPACE_BEGIN
  *
  * - directory "views": contains the views in the scene.
  * - file "synth_0.out": bundle file that contains key points.
+ * 一个scene是一系列的view
  */
+
 class Scene
 {
 public:

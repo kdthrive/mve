@@ -33,6 +33,7 @@ public:
     {
         FEATURE_SIFT = 1 << 0,
         FEATURE_SURF = 1 << 1,
+        FEATURE_SUPERPOINT = 1 << 2,
         FEATURE_ALL = 0xFF
     };
 
@@ -42,6 +43,7 @@ public:
         Options (void);
 
         FeatureTypes feature_types;
+        // SuperPoint::Options superpoint_opts;
         Sift::Options sift_opts;
         Surf::Options surf_opts;
     };
@@ -75,6 +77,7 @@ public:
 private:
     void compute_sift (mve::ByteImage::ConstPtr image);
     void compute_surf (mve::ByteImage::ConstPtr image);
+    void compute_superpoint(mve::ByteImage::ConstPtr image);
 
 private:
     Options opts;

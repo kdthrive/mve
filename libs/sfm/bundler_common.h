@@ -33,6 +33,7 @@ SFM_BUNDLER_NAMESPACE_BEGIN
  * Per-viewport information.
  * Not all data is required for every step. It should be populated on demand
  * and cleaned as early as possible to keep memory consumption in bounds.
+ * viewport包含焦距，畸变，主点。位姿，features,track_ids,backup_tracks
  */
 struct Viewport
 {

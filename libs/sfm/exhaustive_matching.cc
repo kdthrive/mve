@@ -8,7 +8,7 @@
  */
 
 #include "sfm/exhaustive_matching.h"
-
+#include <iostream>
 SFM_NAMESPACE_BEGIN
 
 namespace
@@ -145,6 +145,8 @@ ExhaustiveMatching::pairwise_match_lowres (int view_1_id, int view_2_id,
 {
     ProcessedFeatureSet const& pfs_1 = this->processed_feature_sets[view_1_id];
     ProcessedFeatureSet const& pfs_2 = this->processed_feature_sets[view_2_id];
+    
+    // pfs_1.sift_descr.size()代表有多少个特征
 
     /* SIFT lowres matching. */
     if (pfs_1.sift_descr.size() > 0)

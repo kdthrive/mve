@@ -33,10 +33,14 @@ FeatureSet::compute_features (mve::ByteImage::Ptr image)
     this->height = image->height();
 
     /* Make sure these are in the right order. Matching relies on it. */
+    // if(this->opts.feature_types & FEATURE_SUPERPOINT){
+    //     this->compute_superpoint(image);
+    // }
     if (this->opts.feature_types & FEATURE_SIFT)
         this->compute_sift(image);
     if (this->opts.feature_types & FEATURE_SURF)
         this->compute_surf(image);
+    
 }
 
 void
@@ -115,6 +119,12 @@ FeatureSet::compute_surf (mve::ByteImage::ConstPtr image)
     /* Keep SURF descriptors. */
     std::swap(descr, this->surf_descriptors);
 }
+
+void
+FeatureSet::compute_superpoint (mve::ByteImage::ConstPtr image){
+    // todo
+}
+
 
 void
 FeatureSet::clear_descriptors (void)

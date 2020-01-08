@@ -61,6 +61,7 @@ MVE_NAMESPACE_BEGIN
  * An MVE view is represented in a directory. This class manages the file
  * system layout, meta information in form of (key,value) pairs, and
  * dynamically loads images and blob.
+ * 一个view是一个容器，包含每个viewport数据，例如图片，深度图和其他数据。
  */
 class View
 {
