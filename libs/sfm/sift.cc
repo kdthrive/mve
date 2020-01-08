@@ -288,7 +288,6 @@ Sift::extrema_detection (mve::FloatImage::ConstPtr s[3], int oi, int si)
 {
     int const w = s[1]->width();
     int const h = s[1]->height();
-
     /* Offsets for the 9-neighborhood w.r.t. center pixel. */
     int noff[9] = { -1 - w, 0 - w, 1 - w, -1, 0, 1, -1 + w, 0 + w, 1 + w };
 
@@ -541,7 +540,14 @@ Sift::descriptor_generation (void)
         for (std::size_t j = 0; j < orientations.size(); ++j)
         {
             Descriptor desc;
+
+
+/****************************************************************************** 
+ * scale_factor对keypoint的x和y进行了放大??
+ * orientations是寻找主方向得到的好几个大于最大值80%的方向
+ * */            
             float const scale_factor = std::pow(2.0f, kp.octave);
+
             desc.x = scale_factor * (kp.x + 0.5f) - 0.5f;
             desc.y = scale_factor * (kp.y + 0.5f) - 0.5f;
             desc.scale = this->keypoint_absolute_scale(kp);
@@ -572,17 +578,16 @@ Sift::generate_grad_ori_images (Octave* octave)
         mve::FloatImage::Ptr grad = mve::FloatImage::create(width, height, 1);
         mve::FloatImage::Ptr ori = mve::FloatImage::create(width, height, 1);
 
-        int image_iter = width + 1;
+        int image_iter = width + 1;//321
         for (int y = 1; y < height - 1; ++y, image_iter += 2)
             for (int x = 1; x < width - 1; ++x, ++image_iter)
             {
-                float m1x = img->at(image_iter - 1);
-                float p1x = img->at(image_iter + 1);
-                float m1y = img->at(image_iter - width);
-                float p1y = img->at(image_iter + width);
+                float m1x = img->at(image_iter - 1);//320
+                float p1x = img->at(image_iter + 1);//322
+                float m1y = img->at(image_iter - width);//1
+                float p1y = img->at(image_iter + width);//641
                 float dx = 0.5f * (p1x - m1x);
-                float dy = 0.5f * (p1y - m1y);
-
+                float dy = 0.5f * (p1y - m1y);                
                 float atan2f = std::atan2(dy, dx);
                 grad->at(image_iter) = std::sqrt(dx * dx + dy * dy);
                 ori->at(image_iter) = atan2f < 0.0f
@@ -611,7 +616,6 @@ Sift::orientation_assignment (Keypoint const& kp,
     int const iy = static_cast<int>(kp.y + 0.5f);
     int const is = static_cast<int>(math::round(kp.sample));
     float const sigma = this->keypoint_relative_scale(kp);
-
     /* Images with its dimension for the keypoint. */
     mve::FloatImage::ConstPtr grad(octave->grad[is + 1]);
     mve::FloatImage::ConstPtr ori(octave->ori[is + 1]);
@@ -626,6 +630,7 @@ Sift::orientation_assignment (Keypoint const& kp,
      * the keypoint is discarded.
      */
     float const sigma_factor = 1.5f;
+    // 寻找主方向时，高斯滤波的windowsize
     int win = static_cast<int>(sigma * sigma_factor * 3.0f);
     if (ix < win || ix + win >= width || iy < win || iy + win >= height)
         return;
@@ -635,7 +640,6 @@ Sift::orientation_assignment (Keypoint const& kp,
     float const dxf = kp.x - static_cast<float>(ix);
     float const dyf = kp.y - static_cast<float>(iy);
     float const maxdist = static_cast<float>(win*win) + 0.5f;
-
     /* Populate histogram over window, intersected with (1,1), (w-2,h-2). */
     for (int dy = -win; dy <= win; ++dy)
     {
@@ -760,14 +764,14 @@ Sift::descriptor_assignment (Keypoint const& kp, Descriptor& desc,
             /* Get pixel gradient magnitude and orientation. */
             float const mod = grad->at(center + yoff + dx);
             float const angle = ori->at(center + yoff + dx);
+            //?????????????????????????????????????????????????????
             float theta = angle - desc.orientation;
             if (theta < 0.0f)
                 theta += 2.0f * MATH_PI;
 
             /* Compute fractional coordinates w.r.t. the window. */
-            float const winx = (float)dx - dxf;
+            float const winx = (float)dx - dxf;//dx-(kp.x-ix)
             float const winy = (float)dy - dyf;
-
             /*
              * Compute normalized coordinates w.r.t. bins. The window
              * coordinates are rotated around the keypoint. The bins are
@@ -776,10 +780,13 @@ Sift::descriptor_assignment (Keypoint const& kp, Descriptor& desc,
              * of the first bin center in the three dimensional histogram.
              */
             float binoff = (float)(PXB - 1) / 2.0f;
+
             float binx = (coso * winx + sino * winy) / binsize + binoff;
             float biny = (-sino * winx + coso * winy) / binsize + binoff;
             float bint = theta * (float)OHB / (2.0f * MATH_PI) - 0.5f;
-
+            std::cout<<"111111111111111111"<<std::endl;
+            std::cout<<binx<<" "<<biny<<" "<<bint<<std::endl;
+            std::cout<<"222202222222222222222"<<std::endl;
             /* Compute circular window weight for the sample. */
             float gaussian_sigma = 0.5f * (float)PXB;
             float gaussian_weight = math::gaussian_xx
@@ -797,6 +804,9 @@ Sift::descriptor_assignment (Keypoint const& kp, Descriptor& desc,
             int bxi[2] = { (int)std::floor(binx), (int)std::floor(binx) + 1 };
             int byi[2] = { (int)std::floor(biny), (int)std::floor(biny) + 1 };
             int bti[2] = { (int)std::floor(bint), (int)std::floor(bint) + 1 };
+            // std::cout<<"111111111111111111"<<std::endl;
+            // std::cout<<bxi[0]<<" "<<bxi[1]<<std::endl;
+            // std::cout<<"222202222222222222222"<<std::endl;
 
             float weights[3][2] = {
                 { (float)bxi[1] - binx, 1.0f - ((float)bxi[1] - binx) },
@@ -822,6 +832,7 @@ Sift::descriptor_assignment (Keypoint const& kp, Descriptor& desc,
                             continue;
 
                         int idx = bti[t] + bxi[x] * xstride + byi[y] * ystride;
+                        //contrib = mod * gaussian_weight
                         desc.data[idx] += contrib * weights[0][x]
                             * weights[1][y] * weights[2][t];
                     }

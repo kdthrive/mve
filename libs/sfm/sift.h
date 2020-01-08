@@ -182,6 +182,7 @@ protected:
      */
     struct Octave
     {
+        //ImageVector定义了一系列的FloatImage
         typedef std::vector<mve::FloatImage::Ptr> ImageVector;
         ImageVector img; ///< S+3 images per octave
         ImageVector dog; ///< S+2 difference of gaussian images

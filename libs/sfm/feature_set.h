@@ -23,6 +23,7 @@ SFM_NAMESPACE_BEGIN
 /**
  * The FeatureSet holds per-feature information for a single view, and
  * allows to transparently compute and match multiple feature types.
+ * FeatureSet保存单个view中每个特征的信息
  */
 class FeatureSet
 {

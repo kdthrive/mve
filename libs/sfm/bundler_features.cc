@@ -21,6 +21,7 @@ SFM_BUNDLER_NAMESPACE_BEGIN
 void
 Features::compute (mve::Scene::Ptr scene, ViewportList* viewports)
 {
+
     if (scene == nullptr)
         throw std::invalid_argument("Null scene given");
     if (viewports == nullptr)
@@ -67,6 +68,7 @@ Features::compute (mve::Scene::Ptr scene, ViewportList* viewports)
         Viewport* viewport = &viewports->at(i);
         viewport->features.set_options(this->opts.feature_options);
         viewport->features.compute_features(image);
+        // principad_point[0] = 0.5,principal_point[1]=0.5??
         viewport->features.normalize_feature_positions(
             viewport->principal_point[0], viewport->principal_point[1]);
 
