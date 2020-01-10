@@ -79,10 +79,8 @@ public:
         float x;
         /** The sub-pixel y-coordinate of the image keypoint. */
         float y;
-        /** The scale (or sigma value) of the keypoint. */
-        float scale;
-        /** The orientation of the image keypoint in [0, 2PI]. */
-        float orientation;
+
+        float scale=1;
         /** The descriptor data, elements are unsigned in [0.0, 1.0]. */
         math::Vector<float, 256> data;
     };
@@ -108,33 +106,12 @@ public:
     /** Returns the list of descriptors. */
     Descriptors const& get_descriptors (void) const;
 
-
-protected:
-    /**
-     * Representation of a SIFT octave.
-     */
-    struct Octave
-    {
-        //ImageVector定义了一系列的FloatImage
-        typedef std::vector<mve::FloatImage::Ptr> ImageVector;
-        ImageVector img; ///< S+3 images per octave
-        ImageVector dog; ///< S+2 difference of gaussian images
-        ImageVector grad; ///< S+3 gradient images
-        ImageVector ori; ///< S+3 orientation images
-    };
-
-protected:
-    typedef std::vector<Octave> Octaves;
-
 protected:
 
-    void orientation_assignment (Keypoint const& kp,
-        Octave const* octave, std::vector<float>& orientations);
-    bool descriptor_assignment (Keypoint const& kp, Descriptor& desc,
-        Octave const* octave);
-
+    bool descriptor_assignment (Keypoint const& kp, Descriptor& desc);
     float keypoint_relative_scale (Keypoint const& kp);
     float keypoint_absolute_scale (Keypoint const& kp);
+    void descriptor_generation (void);
 
     //#############################TTTTTTTTTTOOOOOOOOOOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOOddddd
 

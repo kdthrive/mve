@@ -273,6 +273,7 @@ namespace
         }
     }
 }
+//载入图像
 
 ByteImage::Ptr
 load_png_file (std::string const& filename)

@@ -18,6 +18,8 @@
 #include "mve/image_io.h"
 #include "mve/image_tools.h"
 #include "sfm/superpoint.h"
+#include "python3.6m/Python.h"
+
 
 SFM_NAMESPACE_BEGIN
 
@@ -35,7 +37,11 @@ SuperPoint::SuperPoint (Options const& options)
 void
 SuperPoint::process (void)
 {
-    
+    util::ClockTimer timer,total_timer;
+    if(this->options.verbose_output){
+        std::cout<<"SUPERPPOINT:Computing"<<std::endl;
+    }
+    this->descriptor_generation();
 }
 
 /* ---------------------------------------------------------------- */
@@ -72,7 +78,17 @@ SuperPoint::set_float_image (mve::FloatImage::ConstPtr img)
         this->orig = img->duplicate();
     }
 }
+void
+SuperPoint::descriptor_generation(void){    
+    Py_Initialize();
+    // 执行SuperPoint，将结果写入文件
+    
 
+
+
+    Py_Finalize();
+    // 读文件，获得keypoins和descriptors
+}
 
 
 

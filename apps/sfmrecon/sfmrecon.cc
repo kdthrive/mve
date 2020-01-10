@@ -153,6 +153,7 @@ sfm_reconstruct (AppSettings const& conf)
 #endif
 
     /* Load scene. */
+    // conf.scene_path = re
     mve::Scene::Ptr scene;
     try
     {
@@ -169,8 +170,10 @@ sfm_reconstruct (AppSettings const& conf)
         sfm::bundler::load_survey_from_file(conf.survey_file, &survey);
 
     /* Try to load the pairwise matching from the prebundle. */
+    // scene->get_path()='re'
     std::string const prebundle_path
         = util::fs::join_path(scene->get_path(), conf.prebundle_file);
+        
     sfm::bundler::ViewportList viewports;
     sfm::bundler::PairwiseMatching pairwise_matching;
     if (!util::fs::file_exists(prebundle_path.c_str()))
