@@ -15,8 +15,8 @@
  * - Memory consumption is quite high, especially with large images.
  *   TODO: Find a more efficent code path to create octaves.
  */
-#ifndef SFM_SIFT_HEADER
-#define SFM_SIFT_HEADER
+#ifndef SFM_SUPERPOINT_HEADER
+#define SFM_SUPERPOINT_HEADER
 
 #include <string>
 #include <vector>
@@ -136,10 +136,11 @@ protected:
     float keypoint_relative_scale (Keypoint const& kp);
     float keypoint_absolute_scale (Keypoint const& kp);
 
+    //#############################TTTTTTTTTTOOOOOOOOOOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOOddddd
+
 private:
     Options options;
     mve::FloatImage::ConstPtr orig; // Original input image
-    Octaves octaves; // The image pyramid (the octaves)
     Keypoints keypoints; // Detected keypoints
     Descriptors descriptors; // Final SIFT descriptors
 };
@@ -147,27 +148,20 @@ private:
 /* ---------------------------------------------------------------- */
 
 inline
-Sift::Options::Options (void)
-    : num_samples_per_octave(3)
-    , min_octave(0)
-    , max_octave(4)
-    , contrast_threshold(-1.0f)
-    , edge_ratio_threshold(10.0f)
-    , base_blur_sigma(1.6f)
-    , inherent_blur_sigma(0.5f)
-    , verbose_output(false)
+SuperPoint::Options::Options (void)
+    : verbose_output(false)
     , debug_output(false)
 {
 }
 
-inline Sift::Keypoints const&
-Sift::get_keypoints (void) const
+inline SuperPoint::Keypoints const&
+SuperPoint::get_keypoints (void) const
 {
     return this->keypoints;
 }
 
-inline Sift::Descriptors const&
-Sift::get_descriptors (void) const
+inline SuperPoint::Descriptors const&
+SuperPoint::get_descriptors (void) const
 {
     return this->descriptors;
 }

@@ -40,6 +40,8 @@ FeatureSet::compute_features (mve::ByteImage::Ptr image)
         this->compute_sift(image);
     if (this->opts.feature_types & FEATURE_SURF)
         this->compute_surf(image);
+    if (0)
+        this->compute_superpoint(image);
     
 }
 
@@ -120,9 +122,34 @@ FeatureSet::compute_surf (mve::ByteImage::ConstPtr image)
     std::swap(descr, this->surf_descriptors);
 }
 
+
 void
 FeatureSet::compute_superpoint (mve::ByteImage::ConstPtr image){
-    // todo
+    SuperPoint::Descriptors descr;
+    {
+        SuperPoint superpoint(this->opts.superpoint_opts);
+        superpoint.set_image(image);
+        superpoint.process();
+        descr = superpoint.get_descriptors();
+    }
+
+    /* SuperPoint features by scale for low-res matching. */
+    std::sort(descr.begin(), descr.end(), compare_scale<sfm::SuperPoint::Descriptor>);
+
+    /* Prepare and copy to data structures. */
+    std::size_t offset = this->positions.size();
+    this->positions.resize(offset + descr.size());
+    this->colors.resize(offset + descr.size());
+
+    for (std::size_t i = 0; i < descr.size(); ++i)
+    {
+        SuperPoint::Descriptor const& d = descr[i];
+        this->positions[offset + i] = math::Vec2f(d.x, d.y);
+        image->linear_at(d.x, d.y, this->colors[offset + i].begin());
+    }
+
+    /* Keep SIFT descriptors. */
+    std::swap(descr, this->superpoint_descriptors);
 }
 
 

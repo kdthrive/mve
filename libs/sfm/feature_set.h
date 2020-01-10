@@ -16,6 +16,7 @@
 #include "util/aligned_memory.h"
 #include "sfm/sift.h"
 #include "sfm/surf.h"
+#include "sfm/superpoint.h"
 #include "sfm/defines.h"
 
 SFM_NAMESPACE_BEGIN
@@ -46,6 +47,7 @@ public:
         // SuperPoint::Options superpoint_opts;
         Sift::Options sift_opts;
         Surf::Options surf_opts;
+        SuperPoint::Options superpoint_opts;
     };
 
 public:
@@ -73,7 +75,8 @@ public:
     Sift::Descriptors sift_descriptors;
     /** The SURF descriptors. */
     Surf::Descriptors surf_descriptors;
-
+    /** The SUPERPOINT descriptors */
+    SuperPoint::Descriptors superpoint_descriptors;
 private:
     void compute_sift (mve::ByteImage::ConstPtr image);
     void compute_surf (mve::ByteImage::ConstPtr image);
