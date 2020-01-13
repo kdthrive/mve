@@ -137,6 +137,7 @@ public:
     typedef std::vector<BlobProxy> BlobProxies;
 
 public:
+    std::string path;
     static View::Ptr create (void);
     static View::Ptr create (std::string const& path);
 
@@ -144,7 +145,7 @@ public:
     View operator= (const View&) = delete;
 
     /* --------------------- I/O interface -------------------- */
-
+    std::string get_abspath(std::string const& path);
     /** Initializes the view from a directory. */
     void load_view (std::string const& path);
 
@@ -305,7 +306,6 @@ protected:
     typedef std::vector<std::string> FilenameList;
 
 protected:
-    std::string path;
     MetaData meta_data;
     ImageProxies images;
     BlobProxies blobs;

@@ -21,6 +21,7 @@ MVE_NAMESPACE_BEGIN
 void
 Scene::load_scene (std::string const& base_path)
 {
+
     if (base_path.empty())
         throw util::Exception("Invalid file name given");
     this->basedir = base_path;
@@ -143,11 +144,13 @@ Scene::init_views (void)
     util::WallTimer timer;
 
     /* Iterate over all mve files and create view. */
+
+    // view_path=re/views
     std::string views_path = util::fs::join_path(this->basedir,
         MVE_SCENE_VIEWS_DIR);
     util::fs::Directory views_dir;
     try
-    {
+    {   
         views_dir.scan(views_path);
     }
     catch (util::Exception& e)
@@ -170,6 +173,7 @@ Scene::init_views (void)
         if (util::string::right(views_dir[i].name, 4) != ".mve")
             continue;
         View::Ptr view = View::create();
+        // views_dir[i].get_absolute_name()=re/views/view_0001.mve
         view->load_view(views_dir[i].get_absolute_name());
         temp_list.push_back(view);
         max_id = std::max(max_id, view->get_id());

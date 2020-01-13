@@ -94,12 +94,11 @@ features_and_matching (mve::Scene::Ptr scene, AppSettings const& conf,
     feature_opts.image_embedding = conf.original_name;
     feature_opts.max_image_size = conf.max_image_size;
     feature_opts.feature_options.feature_types = sfm::FeatureSet::FEATURE_ALL;
-
     std::cout << "Computing image features..." << std::endl;
     {
         util::WallTimer timer;
         sfm::bundler::Features bundler_features(feature_opts);
-        bundler_features.compute(scene, viewports);
+        bundler_features.compute(scene, viewports,conf.scene_path);
 
         std::cout << "Computing features took " << timer.get_elapsed()
             << " ms." << std::endl;
@@ -173,7 +172,9 @@ sfm_reconstruct (AppSettings const& conf)
     // scene->get_path()='re'
     std::string const prebundle_path
         = util::fs::join_path(scene->get_path(), conf.prebundle_file);
-        
+    // std::cout<<scene->get_path()<<std::endl;     ==re
+    // std::cout<<prebundle_path<<std::endl;        ==re/pre
+
     sfm::bundler::ViewportList viewports;
     sfm::bundler::PairwiseMatching pairwise_matching;
     if (!util::fs::file_exists(prebundle_path.c_str()))
@@ -516,8 +517,8 @@ main (int argc, char** argv)
 
     /* Setup defaults. */
     AppSettings conf;
+    //re
     conf.scene_path = util::fs::sanitize_path(args.get_nth_nonopt(0));
-
     /* Read arguments. */
     for (util::ArgResult const* i = args.next_option();
         i != nullptr; i = args.next_option())
@@ -583,7 +584,6 @@ main (int argc, char** argv)
             std::exit(EXIT_FAILURE);
         }
     }
-
     try
     {
         check_prebundle(conf);

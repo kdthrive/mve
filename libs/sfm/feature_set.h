@@ -56,7 +56,7 @@ public:
     void set_options (Options const& options);
 
     /** Computes the features specified in the options. */
-    void compute_features (mve::ByteImage::Ptr image);
+    void compute_features (mve::ByteImage::Ptr image,std::string);
 
     /** Normalizes the features positions w.r.t. the image dimensions. */
     void normalize_feature_positions (float px, float py);
@@ -80,7 +80,7 @@ public:
 private:
     void compute_sift (mve::ByteImage::ConstPtr image);
     void compute_surf (mve::ByteImage::ConstPtr image);
-    void compute_superpoint(mve::ByteImage::ConstPtr image);
+    void compute_superpoint(mve::ByteImage::ConstPtr image,std::string path);
 
 private:
     Options opts;

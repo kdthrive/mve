@@ -55,7 +55,8 @@ features_and_matching (mve::Scene::Ptr scene, AppSettings const& conf,
     {
         util::WallTimer timer;
         sfm::bundler::Features bundler_features(feature_opts);
-        bundler_features.compute(scene, viewports);
+        bundler_features.compute(scene, viewports,conf.scene_path);
+        
         std::cout << "Computing features took " << timer.get_elapsed()
             << " ms." << std::endl;
     }

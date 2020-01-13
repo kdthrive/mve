@@ -44,7 +44,7 @@ public:
     explicit Features (Options const& options);
 
     /** Computes features for all images in the scene. */
-    void compute (mve::Scene::Ptr scene, ViewportList* viewports);
+    void compute (mve::Scene::Ptr scene, ViewportList* viewports,const std::string tpath);
 
 private:
     Options opts;

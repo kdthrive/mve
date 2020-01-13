@@ -25,7 +25,7 @@ namespace
 }  /* namespace */
 
 void
-FeatureSet::compute_features (mve::ByteImage::Ptr image)
+FeatureSet::compute_features (mve::ByteImage::Ptr image,std::string path)
 {
     this->colors.clear();
     this->positions.clear();
@@ -33,16 +33,14 @@ FeatureSet::compute_features (mve::ByteImage::Ptr image)
     this->height = image->height();
 
     /* Make sure these are in the right order. Matching relies on it. */
-    // if(this->opts.feature_types & FEATURE_SUPERPOINT){
-    //     this->compute_superpoint(image);
-    // }
-    if (this->opts.feature_types & FEATURE_SIFT)
-        this->compute_sift(image);
-    if (this->opts.feature_types & FEATURE_SURF)
-        this->compute_surf(image);
-    if (0)
-        this->compute_superpoint(image);
-    
+
+    // if (this->opts.feature_types & FEATURE_SIFT)
+        // this->compute_sift(image);
+    // if (this->opts.feature_types & FEATURE_SURF)
+    //     this->compute_surf(image);
+    if (1){
+        this->compute_superpoint(image,path);
+    }
 }
 
 void
@@ -89,6 +87,7 @@ FeatureSet::compute_sift (mve::ByteImage::ConstPtr image)
 
     /* Keep SIFT descriptors. */
     std::swap(descr, this->sift_descriptors);
+
 }
 
 void
@@ -124,10 +123,11 @@ FeatureSet::compute_surf (mve::ByteImage::ConstPtr image)
 
 
 void
-FeatureSet::compute_superpoint (mve::ByteImage::ConstPtr image){
+FeatureSet::compute_superpoint (mve::ByteImage::ConstPtr image,std::string path){
     SuperPoint::Descriptors descr;
     {
         SuperPoint superpoint(this->opts.superpoint_opts);
+        superpoint.set_oncepath(path);
         superpoint.set_image(image);
         superpoint.process();
         descr = superpoint.get_descriptors();

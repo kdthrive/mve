@@ -29,13 +29,21 @@
 
 MVE_NAMESPACE_BEGIN
 
+
+std::string View::get_abspath(std::string const& user_path){
+    return this->path;
+}
+
 void
 View::load_view (std::string const& user_path)
 {
+
+    // safa_path是最小文件夹的绝对路径,如/home/kdthrive/timg/re/views/view_0000.mve
     std::string safe_path = util::fs::sanitize_path(user_path);
     safe_path = util::fs::abspath(safe_path);
     this->deprecated_format_check(safe_path);
 
+    
     /* Open meta.ini and populate images and blobs. */
     //std::cout << "View: Loading view: " << path << std::endl;
     this->clear();

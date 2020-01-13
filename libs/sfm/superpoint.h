@@ -33,6 +33,7 @@ public:
     /**
      * SuperPoint options.
      */
+    
     struct Options
     {
         Options (void);
@@ -48,20 +49,10 @@ public:
     };
 
     /**
-     * Representation of a SIFT keypoint.
-     * The keypoint locations are relative to the resampled size in
-     * the image pyramid. To get the size relative to the input image,
-     * each of (ix,iy,x,y) need to be multiplied with 2^o, where o
-     * is the octave index of the keypoint. The octave index is -1 for the
-     * upsampled image, 0 for the input image and >0 for subsampled images.
-     * Note that the scale of the KP is already relative to the input image.
+     * Representation of a SUPERPOINT keypoint.
      */
     struct Keypoint
     {
-        /** Octave index of the keypoint. Can be negative. */
-        int octave;
-        /** Sample index. Initally integer in {0 ... S-1}, later in [-1,S]. */
-        float sample;
         /** Keypoint x-coordinate. Initially integer, later sub-pixel. */
         float x;
         /** Keypoint y-coordinate. Initially integer, later sub-pixel. */
@@ -91,9 +82,12 @@ public:
 
 public:
     explicit SuperPoint (Options const& options);
+    /** Sets process path */
+    void set_oncepath (std::string);
 
     /** Sets the input image. */
     void set_image (mve::ByteImage::ConstPtr img);
+
     /** Sets the input image. */
     void set_float_image (mve::FloatImage::ConstPtr img);
 
@@ -106,6 +100,7 @@ public:
     /** Returns the list of descriptors. */
     Descriptors const& get_descriptors (void) const;
 
+    std::string exec(char *cmd);
 protected:
 
     bool descriptor_assignment (Keypoint const& kp, Descriptor& desc);
@@ -120,6 +115,7 @@ private:
     mve::FloatImage::ConstPtr orig; // Original input image
     Keypoints keypoints; // Detected keypoints
     Descriptors descriptors; // Final SIFT descriptors
+    std::string oncepath;
 };
 
 /* ---------------------------------------------------------------- */

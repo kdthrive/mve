@@ -19,7 +19,7 @@ SFM_NAMESPACE_BEGIN
 SFM_BUNDLER_NAMESPACE_BEGIN
 
 void
-Features::compute (mve::Scene::Ptr scene, ViewportList* viewports)
+Features::compute (mve::Scene::Ptr scene, ViewportList* viewports,const std::string tpath)
 {
 
     if (scene == nullptr)
@@ -38,9 +38,10 @@ Features::compute (mve::Scene::Ptr scene, ViewportList* viewports)
     std::size_t total_features = 0;
 
     /* Iterate the scene and compute features. */
-#pragma omp parallel for schedule(dynamic,1)
+// #pragma omp parallel for schedule(dynamic,1)
     for (std::size_t i = 0; i < views.size(); ++i)
     {
+        std::cout<<i<<std::endl;
 #pragma omp critical
         {
             num_done += 1;
@@ -53,6 +54,7 @@ Features::compute (mve::Scene::Ptr scene, ViewportList* viewports)
             continue;
 
         mve::View::Ptr view = views[i];
+        std::string abs_path=view->path;
         mve::ByteImage::Ptr image = view->get_byte_image
             (this->opts.image_embedding);
         if (image == nullptr)
@@ -67,7 +69,7 @@ Features::compute (mve::Scene::Ptr scene, ViewportList* viewports)
         /* Compute features for view. */
         Viewport* viewport = &viewports->at(i);
         viewport->features.set_options(this->opts.feature_options);
-        viewport->features.compute_features(image);
+        viewport->features.compute_features(image,abs_path);
         // principad_point[0] = 0.5,principal_point[1]=0.5??
         viewport->features.normalize_feature_positions(
             viewport->principal_point[0], viewport->principal_point[1]);

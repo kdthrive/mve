@@ -590,6 +590,7 @@ Directory::scan (std::string const& path)
         this->back().path = path;
         this->back().name = ep->d_name;
         this->back().is_dir = (ep->d_type == DT_DIR);
+        // . 500.jpg 0
     }
     ::closedir(dp);
 #endif

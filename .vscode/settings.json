@@ -60,6 +60,14 @@
         "thread": "cpp",
         "cfenv": "cpp",
         "typeindex": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "forward_list": "cpp",
+        "unordered_set": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "slist": "cpp",
+        "future": "cpp",
+        "valarray": "cpp",
+        "variant": "cpp"
     }
 }
