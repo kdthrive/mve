@@ -65,7 +65,7 @@ public:
         /** Minimum number of matching features after RANSAC. */
         int min_matching_inliers = 12;
         /** Perform low-resolution matching to reject unlikely pairs. */
-        bool use_lowres_matching = false;
+        bool use_lowres_matching = true;
         /** Number of features used for low-res matching. */
         int num_lowres_features = 500;
         /** Minimum number of matches from low-res matching. */

@@ -34,13 +34,13 @@ FeatureSet::compute_features (mve::ByteImage::Ptr image,std::string path)
 
     /* Make sure these are in the right order. Matching relies on it. */
 
-    if (this->opts.feature_types & FEATURE_SIFT)
-        this->compute_sift(image);
+    // if (this->opts.feature_types & FEATURE_SIFT)
+    //     this->compute_sift(image);
     // if (this->opts.feature_types & FEATURE_SURF)
     //     this->compute_surf(image);
-    // if (1){
-    //     this->compute_superpoint(image,path);
-    // }
+    if (1){
+        this->compute_superpoint(image,path);
+    }
 }
 
 void

@@ -98,7 +98,6 @@ ExhaustiveMatching::init_sift (SiftDescriptors* dst,
     for (std::size_t i = 0; i < src.size(); ++i, ptr += 128)
     {
         Sift::Descriptor const& d = src[i];
-        std::cout<<src[i].data<<std::endl;
         convert_descriptor(d, ptr);
     }
 }

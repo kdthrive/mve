@@ -48,8 +48,10 @@ Matching::init (ViewportList* viewports)
         throw std::invalid_argument("Viewports must not be null");
 
     this->viewports = viewports;
-    std::cout<<"iiiiinnnnnnnnnnttiiiiiiiiiiiittttttttttt"<<std::endl;
-    std::cout<<this->viewports->at(0).features.superpoint_descriptors.size()<<std::endl;
+    // std::cout<<this->viewports->at(0).features.superpoint_descriptors.size()<<std::endl;
+    // std::cout<<this->viewports->at(0).features.superpoint_descriptors.at(0).data[0]<<std::endl;
+    // std::cout<<this->viewports->at(0).features.superpoint_descriptors.at(0).data[1]<<std::endl;
+
     this->matcher->init(viewports);
     /* Free descriptors. */
     for (std::size_t i = 0; i < viewports->size(); i++)
@@ -61,10 +63,6 @@ Matching::compute (PairwiseMatching* pairwise_matching)
 {
     if (this->viewports == nullptr)
         throw std::runtime_error("Viewports must not be null");
-    std::cout<<viewports->size()<<std::endl;
-    std::cout<<"coccccccccccccccccccccooooooooooommmmmmmmmmmmm"<<std::endl;
-    std::cout<<this->viewports->at(0).features.superpoint_descriptors.size()<<std::endl;
-
     std::size_t num_viewports = this->viewports->size();
     std::size_t num_pairs = num_viewports * (num_viewports - 1) / 2;
     std::size_t num_done = 0;
@@ -97,13 +95,6 @@ Matching::compute (PairwiseMatching* pairwise_matching)
 
         FeatureSet const& view_1 = this->viewports->at(view_1_id).features;
         FeatureSet const& view_2 = this->viewports->at(view_2_id).features;
-        std::cout<<view_1_id<<" "<<view_2_id<<std::endl;
-        std::cout<<"2111111111111111111111111111111111111111111111"<<std::endl;
-        std::cout<<view_1.superpoint_descriptors.size()<<std::endl;
-        std::cout<<view_2.superpoint_descriptors.size()<<std::endl;
-
-        std::cout<<view_1.superpoint_descriptors.at(0).data<<std::endl;
-        std::cout<<view_2.superpoint_descriptors.at(0).data<<std::endl;
 
         if (view_1.positions.empty() || view_2.positions.empty())
             continue;
@@ -149,11 +140,16 @@ Matching::two_view_matching (int view_1_id, int view_2_id,
 {
     FeatureSet const& view_1 = this->viewports->at(view_1_id).features;
     FeatureSet const& view_2 = this->viewports->at(view_2_id).features;
-
     /* Low-res matching if number of features is large. */
+    std::cout<<"twotwotwotwotwotowotwotowotwotowtowotwotowtowto"<<std::endl;
+    std::cout<<view_1.superpoint_descriptors.size()<<std::endl;
+    std::cout<<view_1.superpoint_descriptors.at(0).data<<std::endl;
+    std::cout<<view_1.superpoint_descriptors.at(0).data<<std::endl;
+
     if (this->opts.use_lowres_matching
         && view_1.positions.size() * view_2.positions.size() > 1000000)
-    {
+    {   
+        std::cout<<"111111111111111111111111111111111111111111111"<<std::endl;
         int const num_matches = this->matcher->pairwise_match_lowres(view_1_id,
             view_2_id, this->opts.num_lowres_features);
         if (num_matches < this->opts.min_lowres_matches)
@@ -161,6 +157,7 @@ Matching::two_view_matching (int view_1_id, int view_2_id,
             message << "only " << num_matches
                 << " of " << this->opts.min_lowres_matches
                 << " low-res matches.";
+                std::cout<<"22222222222222222222222222222222222222222222"<<std::endl;
             return;
         }
     }

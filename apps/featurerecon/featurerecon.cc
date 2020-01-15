@@ -242,10 +242,7 @@ main (int argc, char** argv)
     /* Setup defaults. */
     AppSettings conf;
     conf.scene_path = util::fs::sanitize_path(args.get_nth_nonopt(0));
-    std::cout<<"11111111111111111111111"<<std::endl;
     std::cout<<conf.scene_path<<std::endl;
-    std::cout<<"?????????????????????????????"<<std::endl;
-    std::cout<<"22222222222222222222222"<<std::endl;
     /* Read arguments. */
     for (util::ArgResult const* i = args.next_option();
         i != nullptr; i = args.next_option())
@@ -278,7 +275,6 @@ main (int argc, char** argv)
     }
 
     /* Reconstruct features. */
-    std::cout<<"ssssssssssssssssssssssssssssssssssssss"<<std::endl;
     feature_recon(scene, conf);
     return EXIT_SUCCESS;
 }
