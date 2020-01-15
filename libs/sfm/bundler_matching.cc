@@ -48,8 +48,9 @@ Matching::init (ViewportList* viewports)
         throw std::invalid_argument("Viewports must not be null");
 
     this->viewports = viewports;
+    std::cout<<"iiiiinnnnnnnnnnttiiiiiiiiiiiittttttttttt"<<std::endl;
+    std::cout<<this->viewports->at(0).features.superpoint_descriptors.size()<<std::endl;
     this->matcher->init(viewports);
-
     /* Free descriptors. */
     for (std::size_t i = 0; i < viewports->size(); i++)
         viewports->at(i).features.clear_descriptors();
@@ -60,6 +61,9 @@ Matching::compute (PairwiseMatching* pairwise_matching)
 {
     if (this->viewports == nullptr)
         throw std::runtime_error("Viewports must not be null");
+    std::cout<<viewports->size()<<std::endl;
+    std::cout<<"coccccccccccccccccccccooooooooooommmmmmmmmmmmm"<<std::endl;
+    std::cout<<this->viewports->at(0).features.superpoint_descriptors.size()<<std::endl;
 
     std::size_t num_viewports = this->viewports->size();
     std::size_t num_pairs = num_viewports * (num_viewports - 1) / 2;
@@ -93,6 +97,14 @@ Matching::compute (PairwiseMatching* pairwise_matching)
 
         FeatureSet const& view_1 = this->viewports->at(view_1_id).features;
         FeatureSet const& view_2 = this->viewports->at(view_2_id).features;
+        std::cout<<view_1_id<<" "<<view_2_id<<std::endl;
+        std::cout<<"2111111111111111111111111111111111111111111111"<<std::endl;
+        std::cout<<view_1.superpoint_descriptors.size()<<std::endl;
+        std::cout<<view_2.superpoint_descriptors.size()<<std::endl;
+
+        std::cout<<view_1.superpoint_descriptors.at(0).data<<std::endl;
+        std::cout<<view_2.superpoint_descriptors.at(0).data<<std::endl;
+
         if (view_1.positions.empty() || view_2.positions.empty())
             continue;
 

@@ -99,7 +99,6 @@ features_and_matching (mve::Scene::Ptr scene, AppSettings const& conf,
         util::WallTimer timer;
         sfm::bundler::Features bundler_features(feature_opts);
         bundler_features.compute(scene, viewports,conf.scene_path);
-
         std::cout << "Computing features took " << timer.get_elapsed()
             << " ms." << std::endl;
         log_message(conf, "Feature detection took "
@@ -111,7 +110,7 @@ features_and_matching (mve::Scene::Ptr scene, AppSettings const& conf,
     //matching_opts.ransac_opts.max_iterations = 1000;
     //matching_opts.ransac_opts.threshold = 0.0015;
     matching_opts.ransac_opts.verbose_output = false;
-    matching_opts.use_lowres_matching = conf.lowres_matching;
+    matching_opts.use_lowres_matching = false;
     matching_opts.match_num_previous_frames = conf.video_matching;
     matching_opts.matcher_type = conf.cascade_hashing
         ? sfm::bundler::Matching::MATCHER_CASCADE_HASHING
@@ -182,7 +181,6 @@ sfm_reconstruct (AppSettings const& conf)
         log_message(conf, "Starting feature matching.");
         util::system::rand_seed(RAND_SEED_MATCHING);
         features_and_matching(scene, conf, &viewports, &pairwise_matching);
-
         std::cout << "Saving pre-bundle to file..." << std::endl;
         sfm::bundler::save_prebundle_to_file(
             viewports, pairwise_matching,prebundle_path);

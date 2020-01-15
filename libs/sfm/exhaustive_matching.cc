@@ -25,7 +25,17 @@ namespace
             data[i] = static_cast<unsigned char>(value);
         }
     }
-
+    void
+    convert_descriptor (SuperPoint::Descriptor const& descr, signed short* data)
+    {
+        for (int i = 0; i < 256; ++i)
+        {
+            float value = descr.data[i];
+            value = math::clamp(value, -1.0f, 1.0f);
+            value = math::round(value * 255.0f);
+            data[i] = static_cast<unsigned char>(value);
+        }
+    }
     void
     convert_descriptor (Surf::Descriptor const& descr, signed short* data)
     {
@@ -37,6 +47,9 @@ namespace
             data[i] = static_cast<signed char>(value);
         }
     }
+
+
+    
 #else // DISCRETIZE_DESCRIPTORS
     void
     convert_descriptor (Sift::Descriptor const& descr, float* data)
@@ -66,6 +79,7 @@ ExhaustiveMatching::init (bundler::ViewportList* viewports)
 
         this->init_sift(&pfs.sift_descr, fs.sift_descriptors);
         this->init_surf(&pfs.surf_descr, fs.surf_descriptors);
+        this->init_superpoint(&pfs.superpoint_descr,fs.superpoint_descriptors);
     }
 }
 
@@ -84,6 +98,7 @@ ExhaustiveMatching::init_sift (SiftDescriptors* dst,
     for (std::size_t i = 0; i < src.size(); ++i, ptr += 128)
     {
         Sift::Descriptor const& d = src[i];
+        std::cout<<src[i].data<<std::endl;
         convert_descriptor(d, ptr);
     }
 }
@@ -106,6 +121,27 @@ ExhaustiveMatching::init_surf (SurfDescriptors* dst,
         convert_descriptor(d, ptr);
     }
 }
+
+void
+ExhaustiveMatching::init_superpoint(SuperPointDescriptors* dst,
+    SuperPoint::Descriptors const& src)
+{
+    /* Prepare and copy to data structures. */
+    dst->resize(src.size());
+
+#if DISCRETIZE_DESCRIPTORS
+// util::AlignedMemory<math::Vec64s, 16UL> *dst;
+    int16_t* ptr = dst->data()->begin();
+#else
+    float* ptr = dst->data()->begin();
+#endif
+    for (std::size_t i = 0; i < src.size(); ++i, ptr += 256)
+    {
+        SuperPoint::Descriptor const& d = src[i];
+        convert_descriptor(d, ptr);
+    }
+}
+
 
 void
 ExhaustiveMatching::pairwise_match (int view_1_id, int view_2_id,

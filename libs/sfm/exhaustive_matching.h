@@ -46,19 +46,25 @@ protected:
 #if DISCRETIZE_DESCRIPTORS
     typedef util::AlignedMemory<math::Vec128us, 16> SiftDescriptors;
     typedef util::AlignedMemory<math::Vec64s, 16> SurfDescriptors;
+    typedef util::AlignedMemory<math::Vec256s,16> SuperPointDescriptors;
 #else
     typedef util::AlignedMemory<math::Vec128f, 16> SiftDescriptors;
     typedef util::AlignedMemory<math::Vec64f, 16> SurfDescriptors;
+    typedef util::AlignedMemory<math::Vec256us,16> SuperPointDescriptors;
+
 #endif
 
     /** Internal initialization methods for SIFT/SURF features. */
     void init_sift (SiftDescriptors* dst, Sift::Descriptors const& src);
     void init_surf (SurfDescriptors* dst, Surf::Descriptors const& src);
+    void init_superpoint (SuperPointDescriptors* dst, SuperPoint::Descriptors const& src);
 
     struct ProcessedFeatureSet
     {
         SiftDescriptors sift_descr;
         SurfDescriptors surf_descr;
+        SuperPointDescriptors superpoint_descr;
+// TTTTTTTTTTTTTTTTTTTTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
     };
     typedef std::vector<ProcessedFeatureSet> ProcessedFeatureSets;
     ProcessedFeatureSets processed_feature_sets;

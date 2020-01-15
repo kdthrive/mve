@@ -18,8 +18,7 @@
 SFM_NAMESPACE_BEGIN
 SFM_BUNDLER_NAMESPACE_BEGIN
 
-void
-Features::compute (mve::Scene::Ptr scene, ViewportList* viewports,const std::string tpath)
+void Features::compute(mve::Scene::Ptr scene, ViewportList *viewports, const std::string tpath)
 {
 
     if (scene == nullptr)
@@ -27,7 +26,7 @@ Features::compute (mve::Scene::Ptr scene, ViewportList* viewports,const std::str
     if (viewports == nullptr)
         throw std::invalid_argument("No viewports given");
 
-    mve::Scene::ViewList const& views = scene->get_views();
+    mve::Scene::ViewList const &views = scene->get_views();
 
     /* Initialize viewports. */
     viewports->clear();
@@ -38,38 +37,36 @@ Features::compute (mve::Scene::Ptr scene, ViewportList* viewports,const std::str
     std::size_t total_features = 0;
 
     /* Iterate the scene and compute features. */
-// #pragma omp parallel for schedule(dynamic,1)
+    // #pragma omp parallel for schedule(dynamic,1)
     for (std::size_t i = 0; i < views.size(); ++i)
     {
-        std::cout<<i<<std::endl;
+        std::cout << i << std::endl;
 #pragma omp critical
         {
             num_done += 1;
             float percent = (num_done * 1000 / num_views) / 10.0f;
             std::cout << "\rDetecting features, view " << num_done << " of "
-                << num_views << " (" << percent << "%)..." << std::flush;
+                      << num_views << " (" << percent << "%)..." << std::flush;
         }
 
         if (views[i] == nullptr)
             continue;
 
         mve::View::Ptr view = views[i];
-        std::string abs_path=view->path;
-        mve::ByteImage::Ptr image = view->get_byte_image
-            (this->opts.image_embedding);
+        std::string abs_path = view->path;
+        mve::ByteImage::Ptr image = view->get_byte_image(this->opts.image_embedding);
         if (image == nullptr)
             continue;
 
         /* Rescale image until maximum image size is met. */
         util::WallTimer timer;
-        while (this->opts.max_image_size > 0
-            && image->width() * image->height() > this->opts.max_image_size)
+        while (this->opts.max_image_size > 0 && image->width() * image->height() > this->opts.max_image_size)
             image = mve::image::rescale_half_size<uint8_t>(image);
 
         /* Compute features for view. */
-        Viewport* viewport = &viewports->at(i);
+        Viewport *viewport = &viewports->at(i);
         viewport->features.set_options(this->opts.feature_options);
-        viewport->features.compute_features(image,abs_path);
+        viewport->features.compute_features(image, abs_path);
         // principad_point[0] = 0.5,principal_point[1]=0.5??
         viewport->features.normalize_feature_positions(
             viewport->principal_point[0], viewport->principal_point[1]);
@@ -78,10 +75,10 @@ Features::compute (mve::Scene::Ptr scene, ViewportList* viewports,const std::str
         {
             std::size_t const num_feats = viewport->features.positions.size();
             std::cout << "\rView ID "
-                << util::string::get_filled(view->get_id(), 4, '0') << " ("
-                << image->width() << "x" << image->height() << "), "
-                << util::string::get_filled(num_feats, 5, ' ') << " features"
-                << ", took " << timer.get_elapsed() << " ms." << std::endl;
+                      << util::string::get_filled(view->get_id(), 4, '0') << " ("
+                      << image->width() << "x" << image->height() << "), "
+                      << util::string::get_filled(num_feats, 5, ' ') << " features"
+                      << ", took " << timer.get_elapsed() << " ms." << std::endl;
             total_features += viewport->features.positions.size();
         }
 
@@ -91,8 +88,8 @@ Features::compute (mve::Scene::Ptr scene, ViewportList* viewports,const std::str
     }
 
     std::cout << "\rComputed " << total_features << " features "
-        << "for " << num_views << " views (average "
-        << (total_features / num_views) << ")." << std::endl;
+              << "for " << num_views << " views (average "
+              << (total_features / num_views) << ")." << std::endl;
 }
 
 SFM_BUNDLER_NAMESPACE_END

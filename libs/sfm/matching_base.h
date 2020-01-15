@@ -28,7 +28,10 @@ public:
             std::numeric_limits<float>::max() };
         Matching::Options surf_matching_opts{ 64, 0.7f,
             std::numeric_limits<float>::max() };
+        Matching::Options superpoint_matching_opts{ 256, 0.7f,
+            std::numeric_limits<float>::max() };   
     };
+
 
     virtual ~MatchingBase (void) = default;
 

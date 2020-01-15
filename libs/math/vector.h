@@ -66,6 +66,7 @@ typedef Vector<unsigned char,5> Vec5uc;
 typedef Vector<unsigned char,6> Vec6uc;
 typedef Vector<short,64> Vec64s;
 typedef Vector<unsigned short,128> Vec128us;
+typedef Vector<short,256> Vec256s;
 typedef Vector<std::size_t,1> Vec1st;
 typedef Vector<std::size_t,2> Vec2st;
 typedef Vector<std::size_t,3> Vec3st;

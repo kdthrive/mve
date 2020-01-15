@@ -138,7 +138,7 @@ void SuperPoint::descriptor_generation(void)
     }
     Descriptor tdesc;
     int  descnum = 0,descindex=0;
-
+    int flag = 0;
     while (std::getline(ifsd, line))
     {   
         descindex = 0;
@@ -146,7 +146,7 @@ void SuperPoint::descriptor_generation(void)
         std::string token;
         while (ss >> token)
         {
-            tdesc.data[descindex] = std::atof(token.c_str());
+            tdesc.data[descindex] = std::atof(token.c_str()); 
             descindex += 1;
         }
         tdesc.x = keypoints[descnum].x;

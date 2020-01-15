@@ -107,14 +107,11 @@ protected:
     float keypoint_relative_scale (Keypoint const& kp);
     float keypoint_absolute_scale (Keypoint const& kp);
     void descriptor_generation (void);
-
-    //#############################TTTTTTTTTTOOOOOOOOOOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOOddddd
-
 private:
     Options options;
     mve::FloatImage::ConstPtr orig; // Original input image
     Keypoints keypoints; // Detected keypoints
-    Descriptors descriptors; // Final SIFT descriptors
+    Descriptors descriptors; // Final SUPERPOINT descriptors
     std::string oncepath;
 };
 
@@ -141,4 +138,4 @@ SuperPoint::get_descriptors (void) const
 
 SFM_NAMESPACE_END
 
-#endif /* SFM_SIFT_HEADER */
+#endif /* SFM_SUPERPOINT_HEADER */
