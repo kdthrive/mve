@@ -100,7 +100,19 @@ CascadeHashing::pairwise_match (int view_1_id, int view_2_id,
         Matching::remove_inconsistent_matches(&surf_result);
     }
 
-    Matching::combine_results(sift_result, surf_result, result);
+    LocalData const& ld_superpoint_1 = this->local_data_superpoint[view_1_id];
+    LocalData const& ld_superpoint_2 = this->local_data_superpoint[view_2_id];
+    Matching::Result superpoint_result;
+    if (pfs_1.superpoint_descr.size() > 0)
+    {
+        this->twoway_match(this->opts.superpoint_matching_opts,
+            ld_superpoint_1, ld_superpoint_2,
+            pfs_1.superpoint_descr, pfs_2.superpoint_descr,
+            &superpoint_result, this->cashash_opts);
+        Matching::remove_inconsistent_matches(&surf_result);
+    }
+
+    Matching::combine_results(sift_result, surf_result,superpoint_result, result);
 }
 
 void

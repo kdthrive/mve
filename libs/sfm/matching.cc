@@ -48,13 +48,13 @@ Matching::count_consistent_matches (Matching::Result const& matches)
 
 void
 Matching::combine_results(Matching::Result const& sift_result,
-    Matching::Result const& surf_result, Matching::Result* result)
+    Matching::Result const& surf_result, Matching::Result const&superpoint_result,Matching::Result* result)
 {
     /* Determine size of combined matching result. */
     std::size_t num_matches_1 = sift_result.matches_1_2.size()
-        + surf_result.matches_1_2.size();
+        + surf_result.matches_1_2.size()+superpoint_result.matches_1_2.size();
     std::size_t num_matches_2 = sift_result.matches_2_1.size()
-        + surf_result.matches_2_1.size();
+        + surf_result.matches_2_1.size()+superpoint_result.matches_2_1.size();
 
     /* Combine results. */
     result->matches_1_2.clear();
@@ -63,6 +63,8 @@ Matching::combine_results(Matching::Result const& sift_result,
         sift_result.matches_1_2.begin(), sift_result.matches_1_2.end());
     result->matches_1_2.insert(result->matches_1_2.end(),
         surf_result.matches_1_2.begin(), surf_result.matches_1_2.end());
+    result->matches_1_2.insert(result->matches_1_2.end(),
+        superpoint_result.matches_1_2.begin(), superpoint_result.matches_1_2.end());
 
     result->matches_2_1.clear();
     result->matches_2_1.reserve(num_matches_2);
@@ -70,7 +72,8 @@ Matching::combine_results(Matching::Result const& sift_result,
         sift_result.matches_2_1.begin(), sift_result.matches_2_1.end());
     result->matches_2_1.insert(result->matches_2_1.end(),
         surf_result.matches_2_1.begin(), surf_result.matches_2_1.end());
-
+    result->matches_2_1.insert(result->matches_2_1.end(),
+        superpoint_result.matches_2_1.begin(), superpoint_result.matches_2_1.end());
     /* Fix offsets. */
     std::size_t surf_offset_1 = sift_result.matches_1_2.size();
     std::size_t surf_offset_2 = sift_result.matches_2_1.size();
@@ -84,6 +87,7 @@ Matching::combine_results(Matching::Result const& sift_result,
         for (std::size_t i = surf_offset_2; i < result->matches_2_1.size(); ++i)
             if (result->matches_2_1[i] >= 0)
                 result->matches_2_1[i] += surf_offset_1;
+
 
 }
 

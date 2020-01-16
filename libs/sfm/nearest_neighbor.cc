@@ -62,7 +62,7 @@ namespace
     short_inner_prod (T const* query,
         typename NearestNeighbor<T>::Result* result,
         T const* elements, int num_elements, int dimensions)
-    {
+    {  
 #if ENABLE_SSE2_NN_SEARCH && defined(__SSE2__)
         /* Using a constant number reduces computation time by about 1/3. */
         int const dim_8 = dimensions / 8;
@@ -72,6 +72,7 @@ namespace
             /* Compute dot product between query and candidate. */
             __m128i const* query_ptr = reinterpret_cast<__m128i const*>(query);
             __m128i reg_result = _mm_set1_epi16(0);
+
             for (int i = 0; i < dim_8; ++i, ++query_ptr, ++descr_ptr)
             {
                 __m128i reg_query = _mm_load_si128(query_ptr);
@@ -82,7 +83,6 @@ namespace
             T const* tmp = reinterpret_cast<T const*>(&reg_result);
             int inner_product = tmp[0] + tmp[1] + tmp[2] + tmp[3]
                 + tmp[4] + tmp[5] + tmp[6] + tmp[7];
-
             /* Check if new largest inner product has been found. */
             if (inner_product >= result->dist_2nd_best)
             {
@@ -101,12 +101,14 @@ namespace
             }
         }
 #else
+
         T const* descr_ptr = elements;
         for (int i = 0; i < num_elements; ++i)
         {
             int inner_product = 0;
-            for (int i = 0; i < dimensions; ++i, ++descr_ptr)
+            for (int i = 0; i < dimensions; ++i, ++descr_ptr){
                 inner_product += query[i] * *descr_ptr;
+                }
 
             /* Check if new largest inner product has been found. */
             if (inner_product >= result->dist_2nd_best)

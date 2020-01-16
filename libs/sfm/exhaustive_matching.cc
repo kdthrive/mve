@@ -33,7 +33,7 @@ namespace
             float value = descr.data[i];
             value = math::clamp(value, -1.0f, 1.0f);
             value = math::round(value * 255.0f);
-            data[i] = static_cast<unsigned char>(value);
+            data[i] = static_cast<signed char>(value);
         }
     }
     void
@@ -70,13 +70,11 @@ ExhaustiveMatching::init (bundler::ViewportList* viewports)
 {
     this->processed_feature_sets.clear();
     this->processed_feature_sets.resize(viewports->size());
-
-#pragma omp parallel for schedule(dynamic)
+// #pragma omp parallel for schedule(dynamic)
     for (size_t i = 0; i < viewports->size(); i++)
     {
         FeatureSet const& fs = (*viewports)[i].features;
         ProcessedFeatureSet& pfs = this->processed_feature_sets[i];
-
         this->init_sift(&pfs.sift_descr, fs.sift_descriptors);
         this->init_surf(&pfs.surf_descr, fs.surf_descriptors);
         this->init_superpoint(&pfs.superpoint_descr,fs.superpoint_descriptors);
@@ -137,6 +135,7 @@ ExhaustiveMatching::init_superpoint(SuperPointDescriptors* dst,
     for (std::size_t i = 0; i < src.size(); ++i, ptr += 256)
     {
         SuperPoint::Descriptor const& d = src[i];
+        // convert_descriptor (SuperPoint::Descriptor const& descr, signed short* data)
         convert_descriptor(d, ptr);
     }
 }
@@ -170,8 +169,18 @@ ExhaustiveMatching::pairwise_match (int view_1_id, int view_2_id,
             &surf_result);
         Matching::remove_inconsistent_matches(&surf_result);
     }
+    /*SUPERPOINT matching */
+    Matching::Result superpoint_result;
+    if (pfs_1.superpoint_descr.size() > 0)
+    {   
+        Matching::twoway_match(this->opts.superpoint_matching_opts,
+            pfs_1.superpoint_descr.data()->begin(), pfs_1.superpoint_descr.size(),
+            pfs_2.superpoint_descr.data()->begin(), pfs_2.superpoint_descr.size(),
+            &superpoint_result);
+        Matching::remove_inconsistent_matches(&superpoint_result);
+    }
 
-    Matching::combine_results(sift_result, surf_result, result);
+    Matching::combine_results(sift_result, surf_result, superpoint_result,result);
 }
 
 int
@@ -180,9 +189,7 @@ ExhaustiveMatching::pairwise_match_lowres (int view_1_id, int view_2_id,
 {
     ProcessedFeatureSet const& pfs_1 = this->processed_feature_sets[view_1_id];
     ProcessedFeatureSet const& pfs_2 = this->processed_feature_sets[view_2_id];
-    
     // pfs_1.sift_descr.size()代表有多少个特征
-
     /* SIFT lowres matching. */
     if (pfs_1.sift_descr.size() > 0)
     {
@@ -207,6 +214,22 @@ ExhaustiveMatching::pairwise_match_lowres (int view_1_id, int view_2_id,
             std::min(num_features, pfs_2.surf_descr.size()),
             &surf_result);
         return Matching::count_consistent_matches(surf_result);
+    }
+    /* SUPERPOINT lowres matching. */
+
+    if (pfs_1.superpoint_descr.size() > 0)
+    {
+
+        // std::cout<<";;;;;;;;;;;;;;;;;;;;;;"<<std::endl;
+        // std::cout<<*(pfs_1.superpoint_descr.data()->begin()+1)<<std::endl;
+        Matching::Result superpoint_result;
+        Matching::twoway_match(this->opts.superpoint_matching_opts,
+            pfs_1.superpoint_descr.data()->begin(),
+            std::min(num_features, pfs_1.superpoint_descr.size()),
+            pfs_2.superpoint_descr.data()->begin(),
+            std::min(num_features, pfs_2.superpoint_descr.size()),
+            &superpoint_result);
+        return Matching::count_consistent_matches(superpoint_result);
     }
 
     return 0;

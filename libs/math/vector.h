@@ -34,6 +34,7 @@ typedef Vector<float,5> Vec5f;
 typedef Vector<float,6> Vec6f;
 typedef Vector<float,64> Vec64f;
 typedef Vector<float,128> Vec128f;
+typedef Vector<float,256> Vec256f;
 typedef Vector<double,1> Vec1d;
 typedef Vector<double,2> Vec2d;
 typedef Vector<double,3> Vec3d;

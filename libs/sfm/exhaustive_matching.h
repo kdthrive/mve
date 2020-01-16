@@ -44,13 +44,17 @@ public:
 
 protected:
 #if DISCRETIZE_DESCRIPTORS
+// using AlignedMemory = std::vector<T, AlignedAllocator<T, ALIGNMENT>>;
+
     typedef util::AlignedMemory<math::Vec128us, 16> SiftDescriptors;
     typedef util::AlignedMemory<math::Vec64s, 16> SurfDescriptors;
+    // typedef Vector<short,256> Vec256s;
     typedef util::AlignedMemory<math::Vec256s,16> SuperPointDescriptors;
+    // typedef util::AlignedMemory<Vector<short,256>,16> SuperPointDescriptors
 #else
     typedef util::AlignedMemory<math::Vec128f, 16> SiftDescriptors;
     typedef util::AlignedMemory<math::Vec64f, 16> SurfDescriptors;
-    typedef util::AlignedMemory<math::Vec256us,16> SuperPointDescriptors;
+    typedef util::AlignedMemory<math::Vec256f,16> SuperPointDescriptors;
 
 #endif
 
@@ -64,7 +68,6 @@ protected:
         SiftDescriptors sift_descr;
         SurfDescriptors surf_descr;
         SuperPointDescriptors superpoint_descr;
-// TTTTTTTTTTTTTTTTTTTTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
     };
     typedef std::vector<ProcessedFeatureSet> ProcessedFeatureSets;
     ProcessedFeatureSets processed_feature_sets;

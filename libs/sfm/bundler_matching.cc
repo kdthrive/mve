@@ -49,9 +49,6 @@ Matching::init (ViewportList* viewports)
 
     this->viewports = viewports;
     // std::cout<<this->viewports->at(0).features.superpoint_descriptors.size()<<std::endl;
-    // std::cout<<this->viewports->at(0).features.superpoint_descriptors.at(0).data[0]<<std::endl;
-    // std::cout<<this->viewports->at(0).features.superpoint_descriptors.at(0).data[1]<<std::endl;
-
     this->matcher->init(viewports);
     /* Free descriptors. */
     for (std::size_t i = 0; i < viewports->size(); i++)
@@ -61,6 +58,7 @@ Matching::init (ViewportList* viewports)
 void
 Matching::compute (PairwiseMatching* pairwise_matching)
 {
+    std::cout<<this->viewports->at(0).features.positions.size()<<std::endl;
     if (this->viewports == nullptr)
         throw std::runtime_error("Viewports must not be null");
     std::size_t num_viewports = this->viewports->size();
@@ -95,7 +93,6 @@ Matching::compute (PairwiseMatching* pairwise_matching)
 
         FeatureSet const& view_1 = this->viewports->at(view_1_id).features;
         FeatureSet const& view_2 = this->viewports->at(view_2_id).features;
-
         if (view_1.positions.empty() || view_2.positions.empty())
             continue;
 
@@ -141,32 +138,27 @@ Matching::two_view_matching (int view_1_id, int view_2_id,
     FeatureSet const& view_1 = this->viewports->at(view_1_id).features;
     FeatureSet const& view_2 = this->viewports->at(view_2_id).features;
     /* Low-res matching if number of features is large. */
-    std::cout<<"twotwotwotwotwotowotwotowotwotowtowotwotowtowto"<<std::endl;
-    std::cout<<view_1.superpoint_descriptors.size()<<std::endl;
-    std::cout<<view_1.superpoint_descriptors.at(0).data<<std::endl;
-    std::cout<<view_1.superpoint_descriptors.at(0).data<<std::endl;
-
     if (this->opts.use_lowres_matching
         && view_1.positions.size() * view_2.positions.size() > 1000000)
     {   
-        std::cout<<"111111111111111111111111111111111111111111111"<<std::endl;
         int const num_matches = this->matcher->pairwise_match_lowres(view_1_id,
             view_2_id, this->opts.num_lowres_features);
+            std::cout<<"mimimimimimimimimimimimimimimimimi"<<std::endl;
+            std::cout<<num_matches<<std::endl;
         if (num_matches < this->opts.min_lowres_matches)
         {
             message << "only " << num_matches
                 << " of " << this->opts.min_lowres_matches
                 << " low-res matches.";
-                std::cout<<"22222222222222222222222222222222222222222222"<<std::endl;
             return;
         }
     }
-
     /* Perform two-view descriptor matching. */
     sfm::Matching::Result matching_result;
     this->matcher->pairwise_match(view_1_id, view_2_id, &matching_result);
     int num_matches = sfm::Matching::count_consistent_matches(matching_result);
-
+    std::cout<<"hgggggggghhmimidddddddddddddddddddddddddddimimimi"<<std::endl;
+    std::cout<<num_matches<<std::endl;
     /* Require at least 8 matches. Check threshold. */
     int const min_matches_thres = std::max(8, this->opts.min_feature_matches);
     if (num_matches < min_matches_thres)
@@ -204,7 +196,8 @@ Matching::two_view_matching (int view_1_id, int view_2_id,
         ransac.estimate(unfiltered_matches, &ransac_result);
         num_inliers = ransac_result.inliers.size();
     }
-
+    std::cout<<"fiffffffffiiiiiiinnnnnnnnnnnnnnaaaaaaaaaaaaal"<<std::endl;
+    std::cout<<num_inliers<<std::endl;
     /* Require at least 8 inlier matches. */
     int const min_inlier_thres = std::max(8, this->opts.min_matching_inliers);
     if (num_inliers < min_inlier_thres)

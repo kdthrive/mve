@@ -217,6 +217,7 @@ private:
     GlobalData global_data;
     std::vector<LocalData> local_data_sift;
     std::vector<LocalData> local_data_surf;
+    std::vector<LocalData> local_data_superpoint;
     Options cashash_opts;
 };
 

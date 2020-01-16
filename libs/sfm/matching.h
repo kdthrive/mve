@@ -106,7 +106,7 @@ public:
      */
     static void
     combine_results(Result const& sift_result,
-        Result const& surf_result, Matching::Result* result);
+        Result const& surf_result,Matching::Result const&superpoint_result, Matching::Result* result);
 };
 
 /* ---------------------------------------------------------------- */
@@ -129,11 +129,11 @@ Matching::oneway_match (Options const& options,
     NearestNeighbor<T> nn;
     nn.set_elements(set_2);
     nn.set_num_elements(set_2_size);
-
     nn.set_element_dimensions(options.descriptor_length);
-
+    
     for (int i = 0; i < set_1_size; ++i)
     {
+
         typename NearestNeighbor<T>::Result nn_result;
         T const* query_pointer = set_1 + i * options.descriptor_length;
         nn.find(query_pointer, &nn_result);
@@ -150,6 +150,7 @@ Matching::oneway_match (Options const& options,
 template <typename T>
 void
 Matching::twoway_match (Options const& options,
+// set1 pfs_1.superpoint_descr.data()->begin(),
     T const* set_1, int set_1_size,
     T const* set_2, int set_2_size,
     Result* matches)
